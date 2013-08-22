@@ -8,33 +8,27 @@
 #include <ostream>
 #include <stdexcept>
 
-template<typename T>
-T identityTransform(T const& value) {
-    return value;
-}
-
-// FIXME: maybe we should put the sizes at the end.
-// that way we could take a generator and write values until it
-// runs out.
-template<typename T, typename TransformType>
+template<typename IteratorType>
 void writePodArray(
         std::ostream& out,
-        T const* x,
-        size_t n,
-        TransformType transform = &identityTransform<T>)
+        IteratorType begin,
+        IteratorType end)
 {
-    // FIXME: endianness. Pass endian converter as a TransformType
-    size_t eltSize = sizeof(T);
+    auto elements = size_t{0};
+
+    // Write elements
+    while (begin != end) {
+        out.write(reinterpret_cast<char const*>(&*begin), sizeof(*begin));
+        ++begin;
+        ++elements;
+    }
+
+    size_t eltSize = sizeof(
+            typename std::iterator_traits<IteratorType>::value_type);
     // Write size of element
     out.write(reinterpret_cast<char const*>(&eltSize), sizeof(eltSize));
     // Write number of elements
-    out.write(reinterpret_cast<char const*>(&n), sizeof(n));
-
-    // Write elements
-    for (size_t i = 0; i < n; ++i) {
-        T value = transform(x[i]);
-        out.write(reinterpret_cast<char const*>(&value), sizeof(value));
-    }
+    out.write(reinterpret_cast<char const*>(&elements), sizeof(elements));
 }
 
 template<typename T>
@@ -85,15 +79,16 @@ private:
                 "File %1% is not a proper PodArray")));
         }
 
-        _eltSize = *this->convertRawPtr<size_t>(0);
+        _eltSize = *this->convertRawPtr<size_t>(
+                _rawSize - sizeof(_size) - sizeof(_eltSize));
         if (_eltSize != sizeof(T)) {
             throw std::runtime_error(str(format(
                 "Element size mismatch: expected %1%, observed %2%"
                 ) % sizeof(T) % _eltSize));
         }
 
-        _size = *this->convertRawPtr<size_t>(sizeof(_eltSize));
-        _data = this->convertRawPtr<T>(sizeof(_size) + sizeof(_eltSize));
+        _size = *this->convertRawPtr<size_t>(_rawSize - sizeof(_size));
+        _data = this->convertRawPtr<T>(0);
     }
 
 
