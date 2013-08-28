@@ -13,6 +13,9 @@ T identityTransform(T const& value) {
     return value;
 }
 
+// FIXME: maybe we should put the sizes at the end.
+// that way we could take a generator and write values until it
+// runs out.
 template<typename T, typename TransformType>
 void writePodArray(
         std::ostream& out,
