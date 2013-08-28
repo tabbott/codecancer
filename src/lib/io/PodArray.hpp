@@ -3,8 +3,10 @@
 #include <boost/format.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 
+#include <cstddef>
 #include <iterator>
 #include <ostream>
+#include <stdexcept>
 
 template<typename T>
 T identityTransform(T const& value) {
@@ -81,6 +83,12 @@ private:
         }
 
         _eltSize = *this->convertRawPtr<size_t>(0);
+        if (_eltSize != sizeof(T)) {
+            throw std::runtime_error(str(format(
+                "Element size mismatch: expected %1%, observed %2%"
+                ) % sizeof(T) % _eltSize));
+        }
+
         _size = *this->convertRawPtr<size_t>(sizeof(_eltSize));
         _data = this->convertRawPtr<T>(sizeof(_size) + sizeof(_eltSize));
     }

@@ -5,16 +5,19 @@
 
 #include <cstdint>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 using namespace std;
 
 template<typename T>
-class TestPodArray : public ::testing::Test{
-public:
-protected:
+class TestPodArray : public ::testing::Test {
+};
 
+struct u128 {
+    uint64_t x;
+    uint64_t y;
 };
 
 TYPED_TEST_CASE_P(TestPodArray);
@@ -33,6 +36,8 @@ TYPED_TEST(TestPodArray, writeAndMap) {
     writePodArray(out, numbers.data(), numbers.size(),
         &identityTransform<TypeParam>);
     std::string data = out.str();
+
+    EXPECT_THROW(MappedPodArray<u128>(data.data(), data.size()), std::runtime_error);
 
     MappedPodArray<TypeParam> mapped(data.data(), data.size());
     EXPECT_EQ(5u, mapped.size());
