@@ -13,11 +13,20 @@ std::vector<T> makeLcpArray(
         SuffixArray<T> const& sa)
 {
     std::vector<T> lcpData(sa.size());
+    T lastValue;
 
     lcpData[0] = 0;
-    for (size_t i = 1; i < sa.size(); ++i) {
-        lcpData[i] = si.longestCommonPrefix(sa[i], sa[i-1]);
-    }
+    sa.foreach(
+        [&] (size_t idx, T value) {
+            if (idx == 0) {
+                lcpData[idx] = 0;
+            }
+            else {
+                lcpData[idx] = si.longestCommonPrefix(value, lastValue);
+            }
+
+            lastValue = value;
+        });
 
     return lcpData;
 }

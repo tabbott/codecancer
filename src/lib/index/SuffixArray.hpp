@@ -55,8 +55,9 @@ public:
         _sa = 0;
     }
 
+    // for each index in the sa, call f(index, _sa[index])
     template<typename Function>
-    void foreach(Function f) {
+    void foreach(Function f) const {
         for (size_t i = 0; i < _size; ++i) {
             f(i, (*this)[i]);
         }
@@ -77,7 +78,6 @@ public:
     bool operator==(SuffixArray const& rhs) const {
         return _sa == rhs._sa;
     }
-
 
     friend std::ostream& operator<<(std::ostream& s, SuffixArray const& sa) {
         for (size_t i = 0; i < sa.size(); ++i) {
