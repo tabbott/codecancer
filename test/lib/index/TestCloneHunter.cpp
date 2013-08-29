@@ -1,5 +1,5 @@
-#include "dupscan/CloneHunter.hpp"
-#include "dupscan/SourceIndex.hpp"
+#include "index/CloneHunter.hpp"
+#include "index/SourceIndex.hpp"
 
 #include <gtest/gtest.h>
 

@@ -1,5 +1,6 @@
-
 cmake_minimum_required(VERSION 2.8)
+
+project(index)
 
 set(SOURCES
     SourceFileList.cpp
@@ -9,4 +10,4 @@ set(SOURCES
     prefix.hpp
 )
 
-add_library(dupscan ${SOURCES})
+add_library(index ${SOURCES})

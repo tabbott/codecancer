@@ -1,6 +1,6 @@
-#include "dupscan/CloneHunter.hpp"
-#include "dupscan/SourceIndex.hpp"
-#include "dupscan/SourceFileList.hpp"
+#include "index/CloneHunter.hpp"
+#include "index/SourceIndex.hpp"
+#include "index/SourceFileList.hpp"
 
 #include <cstdint>
 #include <cstdlib>

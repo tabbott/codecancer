@@ -1,6 +1,6 @@
-#include "dupscan/LcpArray.hpp"
-#include "dupscan/SourceIndex.hpp"
-#include "dupscan/SuffixArray.hpp"
+#include "index/LcpArray.hpp"
+#include "index/SourceIndex.hpp"
+#include "index/SuffixArray.hpp"
 
 #include <gtest/gtest.h>
 

@@ -1,4 +1,4 @@
-#include "dupscan/SourceIndex.hpp"
+#include "index/SourceIndex.hpp"
 
 #include <gtest/gtest.h>
 
