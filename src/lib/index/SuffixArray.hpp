@@ -6,7 +6,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 // FIXME: pay attention to byte order in IO
 namespace {
@@ -34,33 +33,31 @@ public:
 
     SuffixArray() {}
 
-    explicit SuffixArray(std::string const& sequence)
-        : _sa(sequence.size(), 0)
-        , _decimation(1)
+    SuffixArray(value_type* data, size_t n)
+        : _ownsMemory(false)
+        , _size(n)
+        , _sa(data)
     {
-        divsufsort_wrapper(sequence, _sa.data());
     }
 
-    void toStream(std::ostream& out) const {
-        value_type sz = size();
-        out.write(reinterpret_cast<char*>(&sz), sizeof(sz));
-        out.write(reinterpret_cast<char const*>(_sa.data()), sizeof(value_type) * size());
+    explicit SuffixArray(std::string const& sequence)
+        : _ownsMemory(true)
+        , _size(sequence.size())
+        , _sa(new value_type[_size])
+    {
+        divsufsort_wrapper(sequence, _sa);
     }
 
-    static SuffixArray fromStream(std::istream& in) {
-        value_type sz(0);
-        in.read(reinterpret_cast<char*>(&sz), sizeof(sz));
+    ~SuffixArray() {
+        if (_ownsMemory)
+            delete[] _sa;
 
-        SuffixArray rv;
-        rv._sa.resize(sz, 0);
-        in.read(reinterpret_cast<char*>(rv._sa.data()), sizeof(value_type) * rv.size());
-
-        return rv;
+        _sa = 0;
     }
 
     template<typename Function>
-    void foreachIndex(Function f) {
-        for (size_t i = 0; i < size(); ++i) {
+    void foreach(Function f) {
+        for (size_t i = 0; i < _size; ++i) {
             f(i, (*this)[i]);
         }
     }
@@ -70,39 +67,17 @@ public:
     }
 
     size_t size() const {
-        return _sa.size();
+        return _size;
     }
 
     bool empty() const {
-        return _sa.empty();
-    }
-
-    size_t capacity() const {
-        return _sa.capacity();
+        return _size == 0;
     }
 
     bool operator==(SuffixArray const& rhs) const {
         return _sa == rhs._sa;
     }
 
-    void decimate(size_t factor) {
-        if (_decimation != 1) {
-            throw std::runtime_error("Suffix array is already decimated!");
-        }
-
-        if (factor <= 1) {
-            return; // you're so silly!
-        }
-
-        _decimation = factor;
-
-        size_t o = 1;
-        for (size_t i = factor; i < _sa.size(); i += factor) {
-            _sa[o++] = _sa[i];
-        }
-        _sa.resize(_sa.size() / factor + 1);
-        std::vector<value_type>(_sa).swap(_sa);
-    }
 
     friend std::ostream& operator<<(std::ostream& s, SuffixArray const& sa) {
         for (size_t i = 0; i < sa.size(); ++i) {
@@ -111,15 +86,12 @@ public:
         return s;
     }
 
-    size_t decimation() const {
-        return _decimation;
-    }
-
     value_type const* data() const {
         return _sa.data();
     }
 
 private:
-    std::vector<value_type> _sa;
-    size_t _decimation;
+    bool _ownsMemory;
+    size_t _size;
+    value_type* _sa;
 };
