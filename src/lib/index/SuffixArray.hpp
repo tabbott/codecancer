@@ -58,6 +58,13 @@ public:
         return rv;
     }
 
+    template<typename Function>
+    void foreachIndex(Function f) {
+        for (size_t i = 0; i < size(); ++i) {
+            f(i, (*this)[i]);
+        }
+    }
+
     value_type operator[](size_t idx) const {
         return _sa[idx];
     }
