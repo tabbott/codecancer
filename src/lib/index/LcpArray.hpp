@@ -41,6 +41,11 @@ struct LcpInterval {
 
     static LcpInterval Null;
 
+    size_t size() const {
+        assert(rightBound >= leftBound);
+        return rightBound - leftBound + 1;
+    }
+
     bool operator==(LcpInterval const& rhs) const {
         return lcp == rhs.lcp
             && leftBound == rhs.leftBound
