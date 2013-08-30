@@ -11,15 +11,16 @@
 
 using namespace std;
 
-// Input string for this test: aacatat
+// Input string for this test: aaacatat
 // Sorted suffixes:
-//   aacatat
-//   acatat
-//   at
-//   atat
-//   catat
-//   t
-//   tat
+//     aaacatat
+//     aacatat
+//     acatat
+//     at
+//     atat
+//     catat
+//     t
+//     tat
 
 template<typename T>
 class TestLcpArray : public ::testing::Test {
@@ -62,3 +63,20 @@ TYPED_TEST(TestLcpArray, visitLcpIntervals) {
     EXPECT_EQ(expected, observed);
 }
 
+TYPED_TEST(TestLcpArray, visitLcpIntervalTreeNodes) {
+    auto lcp = makeLcpArray(this->sidx, *this->sa);
+    auto expected = vector<LcpInterval>{
+        LcpInterval{2, 0, 1},
+        LcpInterval{2, 3, 4},
+        LcpInterval{1, 0, 4}};
+
+    vector<LcpInterval> observed;
+
+    visitLcpIntervalTreeNodes(lcp,
+        [&observed] (LcpInterval x) {
+            observed.push_back(x);
+            x.print(cout);
+        });
+
+//    EXPECT_EQ(expected, observed);
+}
