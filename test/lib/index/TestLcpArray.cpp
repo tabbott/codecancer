@@ -50,7 +50,9 @@ TYPED_TEST(TestLcpArray, visitLcpIntervals) {
     auto expected = vector<LcpInterval>{
         LcpInterval{2, 0, 1},
         LcpInterval{2, 3, 4},
-        LcpInterval{1, 0, 4}};
+        LcpInterval{1, 0, 4},
+        LcpInterval{1, 6, 7},
+        };
 
     vector<LcpInterval> observed;
 
@@ -60,6 +62,8 @@ TYPED_TEST(TestLcpArray, visitLcpIntervals) {
             cout << x << "\n";
         });
 
+    this->sa->printSuffixes(cout, this->sidx.string());
+
     EXPECT_EQ(expected, observed);
 }
 
@@ -68,7 +72,9 @@ TYPED_TEST(TestLcpArray, visitLcpIntervalTreeNodes) {
     auto expected = vector<LcpInterval>{
         LcpInterval{2, 0, 1},
         LcpInterval{2, 3, 4},
-        LcpInterval{1, 0, 4}};
+        LcpInterval{1, 0, 4, { LcpInterval{2, 0, 1}, LcpInterval{2, 3, 4} }},
+        LcpInterval{1, 6, 7},
+        };
 
     vector<LcpInterval> observed;
 
@@ -78,5 +84,7 @@ TYPED_TEST(TestLcpArray, visitLcpIntervalTreeNodes) {
             x.print(cout);
         });
 
-//    EXPECT_EQ(expected, observed);
+    this->sa->printSuffixes(cout, this->sidx.string());
+
+    EXPECT_EQ(expected, observed);
 }

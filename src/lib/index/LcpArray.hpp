@@ -39,12 +39,18 @@ struct LcpInterval {
     size_t rightBound;
     std::vector<LcpInterval> children;
 
+    static LcpInterval Null;
+
     bool operator==(LcpInterval const& rhs) const {
         return lcp == rhs.lcp
             && leftBound == rhs.leftBound
             && rightBound == rhs.rightBound
             && children == rhs.children
             ;
+    }
+
+    bool operator!=(LcpInterval const& rhs) const {
+        return !(*this == rhs);
     }
 
     void print(std::ostream& out, size_t indent = 0) const {
@@ -85,13 +91,15 @@ void visitLcpIntervals(std::vector<T> const& lcps, Function f) {
         if (lcps[i] > intervals.top().lcp)
             intervals.emplace(LcpInterval{lcps[i], leftBound, 0});
     }
+
+    intervals.top().rightBound = lcps.size() - 1;
+    f(intervals.top());
 }
 
 template<typename T, typename Function>
 void visitLcpIntervalTreeNodes(std::vector<T> const& lcps, Function f) {
     std::stack<LcpInterval> intervals;
-    LcpInterval lastInterval;
-    bool haveLast = false;
+    auto lastInterval = LcpInterval::Null;
 
     size_t leftBound(0);
 
@@ -104,22 +112,25 @@ void visitLcpIntervalTreeNodes(std::vector<T> const& lcps, Function f) {
             intervals.top().rightBound = i - 1;
             f(intervals.top());
             leftBound = intervals.top().leftBound;
-            auto x = intervals.top();
+            lastInterval = intervals.top();
             intervals.pop();
             if (lcps[i] <= intervals.top().lcp) {
-                intervals.top().children.push_back(x);
-                haveLast = false;
+                intervals.top().children.push_back(lastInterval);
+                lastInterval = LcpInterval::Null;
             }
         }
         if (lcps[i] > intervals.top().lcp) {
-            if (haveLast) {
+            if (lastInterval != LcpInterval::Null) {
                 intervals.emplace(
                     LcpInterval{lcps[i], leftBound, 0, {lastInterval}});
-                haveLast = false;
+                lastInterval = LcpInterval::Null;
             }
             else {
                 intervals.emplace(LcpInterval{lcps[i], leftBound, 0});
             }
         }
     }
+
+    intervals.top().rightBound = lcps.size() - 1;
+    f(intervals.top());
 }

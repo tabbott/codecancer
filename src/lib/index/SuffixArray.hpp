@@ -79,6 +79,12 @@ public:
         return _sa == rhs._sa;
     }
 
+    void printSuffixes(std::ostream& s, std::string const& data) const {
+        for (size_t i = 0; i < size(); ++i) {
+            s << i << "\t" << (*this)[i] << "\t" << data.data() + (*this)[i] << "\n";
+        }
+    }
+
     friend std::ostream& operator<<(std::ostream& s, SuffixArray const& sa) {
         for (size_t i = 0; i < sa.size(); ++i) {
             s << i << ": " << sa[i] << "\n";

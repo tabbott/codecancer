@@ -5,6 +5,7 @@ project(index)
 set(SOURCES
     Bwt.hpp
     CloneHunter.hpp
+    LcpArray.cpp
     LcpArray.hpp
     prefix.hpp
     SourceFileList.cpp
