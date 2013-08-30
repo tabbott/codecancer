@@ -3,6 +3,7 @@
 #include "SourceIndex.hpp"
 #include "SuffixArray.hpp"
 
+#include <stack>
 #include <vector>
 
 // There are more far efficient ways to do this. We'll see how slow this is
@@ -31,14 +32,43 @@ std::vector<T> makeLcpArray(
     return lcpData;
 }
 
-template<typename T>
-class LcpTree {
-public:
-    typedef T value_type;
+struct LcpInterval {
+    size_t lcp;
+    size_t leftBound;
+    size_t rightBound;
 
-    struct Node {
-        value_type leftBound;
-        value_type rightBound;
-        value_type lcp;
-    };
+    bool operator==(LcpInterval const& rhs) const {
+        return lcp == rhs.lcp
+            && leftBound == rhs.leftBound
+            && rightBound == rhs.rightBound
+            ;
+    }
+
+    friend std::ostream& operator<<(std::ostream& out, LcpInterval const& lcpi) {
+        out << "{lcp = " << lcpi.lcp << ", interval = ["
+            << lcpi.leftBound << ", " << lcpi.rightBound << "]}";
+        return out;
+    }
 };
+
+template<typename T, typename Function>
+void visitLcpIntervals(std::vector<T> const& lcps, Function f) {
+    std::stack<LcpInterval> intervals;
+
+    size_t leftBound(0);
+
+    intervals.emplace(LcpInterval{0, 0, 0});
+    for (size_t i = 1; i < lcps.size(); ++i) {
+        leftBound = i - 1;
+
+        assert(!intervals.empty());
+        while (lcps[i] < intervals.top().lcp) {
+            intervals.top().rightBound = i - 1;
+            f(intervals.top());
+            leftBound = intervals.top().leftBound;
+            intervals.pop();
+        }
+        if (lcps[i] > intervals.top().lcp)
+            intervals.emplace(LcpInterval{lcps[i], leftBound, 0});
+    }
+}

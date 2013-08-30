@@ -11,18 +11,54 @@
 
 using namespace std;
 
-TEST(TestLcpArray, build) {
-    SourceIndex sidx;
-    stringstream ss("aaacatat");
-    sidx.addSource("x", ss);
-    SuffixArray<uint32_t> sa(sidx.string());
-    vector<uint32_t> lcp = makeLcpArray(sidx, sa);
-    vector<uint32_t> expected{0, 2, 1, 1, 2, 0, 0, 1};
+// Input string for this test: aacatat
+// Sorted suffixes:
+//   aacatat
+//   acatat
+//   at
+//   atat
+//   catat
+//   t
+//   tat
 
-    for (size_t i = 0; i < sa.size(); ++i) {
-        cout << sa[i] << "\t" << lcp[i] << "\t" << sidx.string().substr(sa[i]) << "\n";;
+template<typename T>
+class TestLcpArray : public ::testing::Test {
+public:
+    void SetUp() {
+        ss << "aaacatat";
+        sidx.addSource("x", ss);
+        sa.reset(new SuffixArray<T>(sidx.string()));
     }
 
+    SourceIndex sidx;
+    stringstream ss;
+    std::unique_ptr<SuffixArray<T>> sa;
+};
+
+typedef ::testing::Types<uint32_t, uint64_t> IntTypes;
+TYPED_TEST_CASE(TestLcpArray, IntTypes);
+
+TYPED_TEST(TestLcpArray, build) {
+    auto lcp = makeLcpArray(this->sidx, *this->sa);
+    auto expected = vector<TypeParam>{0, 2, 1, 1, 2, 0, 0, 1};
     EXPECT_EQ(expected, lcp);
+}
+
+TYPED_TEST(TestLcpArray, visitLcpIntervals) {
+    auto lcp = makeLcpArray(this->sidx, *this->sa);
+    auto expected = vector<LcpInterval>{
+        LcpInterval{2, 0, 1},
+        LcpInterval{2, 3, 4},
+        LcpInterval{1, 0, 4}};
+
+    vector<LcpInterval> observed;
+
+    visitLcpIntervals(lcp,
+        [&observed] (LcpInterval x) {
+            observed.push_back(x);
+            cout << x << "\n";
+        });
+
+    EXPECT_EQ(expected, observed);
 }
 
