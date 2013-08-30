@@ -3,6 +3,8 @@
 #include <divsufsort.h>
 #include <divsufsort64.h>
 
+#include <boost/noncopyable.hpp>
+
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -27,11 +29,9 @@ namespace {
 }
 
 template<typename T>
-class SuffixArray {
+class SuffixArray : public boost::noncopyable {
 public:
     typedef T value_type;
-
-    SuffixArray() {}
 
     SuffixArray(value_type* data, size_t n)
         : _ownsMemory(false)
