@@ -6,4 +6,5 @@ add_unit_tests(TestIndexLib
     TestLcpArray.cpp
     TestSourceIndex.cpp
     TestSuffixArray.cpp
+    TestMaximalIntervalFilter.cpp
 )
