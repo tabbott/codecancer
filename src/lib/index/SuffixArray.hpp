@@ -81,7 +81,7 @@ public:
 
     void printSuffixes(std::ostream& s, std::string const& data) const {
         for (size_t i = 0; i < size(); ++i) {
-            s << i << "\t" << (*this)[i] << "\t" << data.data() + (*this)[i] << "\n";
+            s << i << "\t" << (*this)[i] << "\t[" << data.data() + (*this)[i] << "]\n";
         }
     }
 

@@ -5,6 +5,7 @@ project(index)
 set(SOURCES
     Bwt.hpp
     CloneHunter.hpp
+    MaximalIntervalFilter.hpp
     LcpArray.cpp
     LcpArray.hpp
     prefix.hpp

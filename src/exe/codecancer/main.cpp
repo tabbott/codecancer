@@ -1,6 +1,7 @@
-#include "index/CloneHunter.hpp"
-#include "index/SourceIndex.hpp"
+#include "index/MaximalIntervalFilter.hpp"
+#include "index/LcpArray.hpp"
 #include "index/SourceFileList.hpp"
+#include "index/SourceIndex.hpp"
 
 #include <cstdint>
 #include <cstdlib>
@@ -8,6 +9,29 @@
 #include <stdexcept>
 
 using namespace std;
+
+template<typename T>
+struct Reporter {
+    Reporter(std::ostream& s, SuffixArray<T> const& sa)
+        : _s(s)
+        , _sa(sa)
+    {
+    }
+
+    void operator()(LcpInterval const& x) const {
+        _s << x.lcp << ": ";
+        for (size_t i = x.leftBound; i <= x.rightBound; ++i) {
+            _s << _sa[i];
+            if (i < x.rightBound) {
+                _s << ", ";
+            }
+        }
+        _s << "\n";
+    }
+
+    std::ostream& _s;
+    SuffixArray<T> const& _sa;
+};
 
 int main(int argc, char** argv) {
     if (argc != 3) {
@@ -24,9 +48,13 @@ int main(int argc, char** argv) {
     SourceIndex sidx;
     sidx.addSources(files);
 
-    CloneHunter<uint32_t> hunter(sidx, minRegion);
-    hunter.goHunting();
-    hunter.debugPrintDuplicates();
+    SuffixArray<uint32_t> sa(sidx.string());
+    auto lcp = makeLcpArray(sidx, sa);
+
+    Reporter<uint32_t> clark(cout, sa);
+    std::function<void(LcpInterval const&)> cb(clark);
+    MaximalIntervalFilter<uint32_t> dude(minRegion, sa, sidx.string(), cb);
+    visitLcpIntervals(lcp, dude);
 
     return 0;
 }

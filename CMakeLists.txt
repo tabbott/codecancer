@@ -12,6 +12,9 @@ include(ProjectHelper)
 
 set(EXE_VERSION_SUFFIX ${FULL_VERSION})
 
+# Dump clang compilation database for use with YCM
+set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+
 #configure_file(version/version.h.in version/version.h @ONLY)
 #include_directories(${PROJECT_BINARY_DIR}/version)
 
