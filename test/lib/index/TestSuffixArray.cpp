@@ -18,13 +18,8 @@ TYPED_TEST_CASE(TestSuffixArray, SaTestTypes);
 TYPED_TEST(TestSuffixArray, buildsa) {
     string input("banana");
 
-    vector<TypeParam> sa = makeSuffixArray<TypeParam>(input);
-    EXPECT_EQ(6u, sa.size());
+    auto sa = makeSuffixArray<TypeParam>(input);
+    auto expected = std::vector<TypeParam>{5, 3, 1, 0, 4, 2};
 
-    EXPECT_EQ(5u, sa[0]);
-    EXPECT_EQ(3u, sa[1]);
-    EXPECT_EQ(1u, sa[2]);
-    EXPECT_EQ(0u, sa[3]);
-    EXPECT_EQ(4u, sa[4]);
-    EXPECT_EQ(2u, sa[5]);
+    EXPECT_EQ(expected, sa);
 }

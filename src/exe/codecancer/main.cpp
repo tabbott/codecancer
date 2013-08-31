@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     SourceIndex sidx;
     sidx.addSources(files);
 
-    vector<uint32_t> sa(makeSuffixArray<uint32_t>(sidx.string()));
+    auto sa = makeSuffixArray<uint32_t>(sidx.string());
     vector<uint32_t> lcp;
     lcp.reserve(sa.size());
     makeLcpArray(sidx, sa, back_inserter(lcp));
