@@ -26,7 +26,7 @@ struct MaximalIntervalFilter {
     }
 
     bool wantInterval(LcpInterval const& interval) const {
-        if (interval.size() > 1 && interval.lcp < _minLcp)
+        if (interval.size() <= 1 || interval.lcp < _minLcp)
             return false;
 
         for (size_t i = interval.leftBound; i < interval.rightBound; ++i) {
