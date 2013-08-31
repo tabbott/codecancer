@@ -5,5 +5,5 @@ set(SOURCES
 )
 
 add_executable(codecancer main.cpp)
-target_link_libraries(codecancer index perl_deparse
+target_link_libraries(codecancer index
     ${Boost_LIBRARIES} ${LIBDIVSUFSORT_LIBRARIES})

@@ -7,7 +7,7 @@
 
 #include <cstdint>
 #include <iostream>
-#include <memory>
+#include <iterator>
 #include <sstream>
 #include <string>
 
@@ -17,14 +17,14 @@ public:
     void SetUp() {
         ss << "This frog. This freeze. That frog. That freeze.";
         sidx.addSource("x", ss);
-        sa.reset(new SuffixArray<T>(sidx.string()));
-        lcp = makeLcpArray(sidx, *sa);
+        sa = makeSuffixArray<T>(sidx.string());
+        makeLcpArray(sidx, sa, std::back_inserter(lcp));
     }
 
 protected:
     std::stringstream ss;
     SourceIndex sidx;
-    std::unique_ptr<SuffixArray<T>> sa;
+    std::vector<T> sa;
     std::vector<T> lcp;
 };
 
@@ -41,7 +41,7 @@ TYPED_TEST(TestMaximalIntervalFilter, observe) {
         (LcpInterval const& interval) {
             std::cout << "I HAS A INTERVAL: " << interval << "\n";
             for (size_t i = interval.leftBound; i <= interval.rightBound; ++i) {
-                size_t start = (*this->sa)[i];
+                size_t start = this->sa[i];
                 std::cout << "\t";
                 helperBot(this->sidx.string(), start, interval.lcp);
                 std::cout << "\n";
@@ -49,8 +49,7 @@ TYPED_TEST(TestMaximalIntervalFilter, observe) {
             std::cout << "\n";
         };
 
-    MaximalIntervalFilter<TypeParam> x(5, *this->sa, this->sidx.string(), callback);
-    this->sa->printSuffixes(std::cout, this->sidx.string());
-
-    visitLcpIntervals(this->lcp, x);
+    typedef std::vector<TypeParam> SuffixArray;
+    MaximalIntervalFilter<SuffixArray> filter(5, this->sa, this->sidx.string(), callback);
+    visitLcpIntervals(this->lcp, filter);
 }

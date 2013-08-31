@@ -6,13 +6,14 @@
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <iterator>
 #include <stdexcept>
 
 using namespace std;
 
-template<typename T>
+template<typename T, typename SuffixArray>
 struct Reporter {
-    Reporter(std::ostream& s, SuffixArray<T> const& sa)
+    Reporter(std::ostream& s, SuffixArray const& sa)
         : _s(s)
         , _sa(sa)
     {
@@ -30,7 +31,7 @@ struct Reporter {
     }
 
     std::ostream& _s;
-    SuffixArray<T> const& _sa;
+    SuffixArray const& _sa;
 };
 
 int main(int argc, char** argv) {
@@ -48,12 +49,14 @@ int main(int argc, char** argv) {
     SourceIndex sidx;
     sidx.addSources(files);
 
-    SuffixArray<uint32_t> sa(sidx.string());
-    auto lcp = makeLcpArray(sidx, sa);
+    vector<uint32_t> sa(makeSuffixArray<uint32_t>(sidx.string()));
+    vector<uint32_t> lcp;
+    lcp.reserve(sa.size());
+    makeLcpArray(sidx, sa, back_inserter(lcp));
 
-    Reporter<uint32_t> clark(cout, sa);
+    Reporter<uint32_t, vector<uint32_t>> clark(cout, sa);
     std::function<void(LcpInterval const&)> cb(clark);
-    MaximalIntervalFilter<uint32_t> dude(minRegion, sa, sidx.string(), cb);
+    MaximalIntervalFilter<vector<uint32_t>> dude(minRegion, sa, sidx.string(), cb);
     visitLcpIntervals(lcp, dude);
 
     return 0;

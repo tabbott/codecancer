@@ -9,28 +9,18 @@
 
 // There are more far efficient ways to do this. We'll see how slow this is
 // for the genome codebase and optimize if needed.
-template<typename T>
-std::vector<T> makeLcpArray(
+template<typename SuffixArray, typename OutputIterator>
+void makeLcpArray(
         SourceIndex const& si,
-        SuffixArray<T> const& sa)
+        SuffixArray const& sa,
+        OutputIterator out)
 {
-    std::vector<T> lcpData(sa.size());
-    T lastValue;
+    typedef typename SuffixArray::value_type value_type;
+    *out++ = 0;
 
-    lcpData[0] = 0;
-    sa.foreach(
-        [&] (size_t idx, T value) {
-            if (idx == 0) {
-                lcpData[idx] = 0;
-            }
-            else {
-                lcpData[idx] = si.longestCommonPrefix(value, lastValue);
-            }
-
-            lastValue = value;
-        });
-
-    return lcpData;
+    for (size_t idx = 1; idx < sa.size(); ++idx) {
+        *out++ = si.longestCommonPrefix(sa[idx], sa[idx - 1]);
+    }
 }
 
 struct LcpInterval {

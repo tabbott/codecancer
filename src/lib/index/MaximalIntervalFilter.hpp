@@ -7,10 +7,11 @@
 #include <string>
 #include <functional>
 
-template<typename T>
+template<typename SuffixArray>
 struct MaximalIntervalFilter {
     typedef std::function<void(LcpInterval const&)> Reporter;
-    MaximalIntervalFilter(size_t minLcp, SuffixArray<T> const& sa, std::string const& text, Reporter& r)
+
+    MaximalIntervalFilter(size_t minLcp, SuffixArray const& sa, std::string const& text, Reporter& r)
         : _minLcp(minLcp)
         , _sa(sa)
         , _text(text)
@@ -46,7 +47,7 @@ struct MaximalIntervalFilter {
 
 private:
     size_t _minLcp;
-    SuffixArray<T> const& _sa;
+    SuffixArray const& _sa;
     std::string const& _text;
     Reporter& _report;
 };
