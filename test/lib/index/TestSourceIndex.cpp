@@ -71,6 +71,11 @@ TEST_F(TestSourceIndex, emptyFileThrows) {
     EXPECT_THROW(sidx.addSource("empty", mt), std::runtime_error);
 }
 
+TEST_F(TestSourceIndex, lcpOutOfBounds) {
+    stringstream mt;
+    EXPECT_THROW(sidx.longestCommonPrefix(100, 150), std::runtime_error);
+}
+
 TEST(SourceIndex, lcp) {
     SourceIndex sidx;
     stringstream ss("banana");
