@@ -35,7 +35,7 @@ TYPED_TEST_CASE(TestMaximalIntervalFilter, IntTypes);
 TYPED_TEST(TestMaximalIntervalFilter, observe) {
     std::vector<LcpInterval> intervals;
     // These expected intervals were validated by hand.
-    auto expected = std::vector<LcpInterval>{
+    auto expectedIntervals = std::vector<LcpInterval>{
         {8, 3, 4},
         {9, 5, 6},
         {9, 8, 9},
@@ -59,6 +59,6 @@ TYPED_TEST(TestMaximalIntervalFilter, observe) {
     typedef std::vector<TypeParam> SuffixArray;
     MaximalIntervalFilter<SuffixArray> filter(5, this->sa, this->text, cb);
     visitLcpIntervals(this->lcp, filter);
-    EXPECT_EQ(expected, intervals);
+    EXPECT_EQ(expectedIntervals, intervals);
     EXPECT_EQ(expectedDuplicates, duplicates);
 }
