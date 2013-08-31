@@ -15,14 +15,15 @@ template<typename T>
 class TestMaximalIntervalFilter : public ::testing::Test {
 public:
     void SetUp() {
-        ss << "This frog. This freeze. That frog. That freeze.";
+        text = "This frog. This freeze. That frog. That freeze.";
+        std::stringstream ss(text);
         sidx.addSource("x", ss);
         sa = makeSuffixArray<T>(sidx.string());
         makeLcpArray(sidx, sa, std::back_inserter(lcp));
     }
 
 protected:
-    std::stringstream ss;
+    std::string text;
     SourceIndex sidx;
     std::vector<T> sa;
     std::vector<T> lcp;
@@ -31,25 +32,33 @@ protected:
 typedef ::testing::Types<uint32_t, uint64_t> IntTypes;
 TYPED_TEST_CASE(TestMaximalIntervalFilter, IntTypes);
 
-void helperBot(std::string const& s, size_t pos, size_t len) {
-    std::cout << s.substr(0, pos) << "[" << s.substr(pos, len) << "]"
-        << s.substr(pos+len);
-}
-
 TYPED_TEST(TestMaximalIntervalFilter, observe) {
-    std::function<void(LcpInterval const&)> callback = [&]
+    std::vector<LcpInterval> intervals;
+    // These expected intervals were validated by hand.
+    auto expected = std::vector<LcpInterval>{
+        {8, 3, 4},
+        {9, 5, 6},
+        {9, 8, 9},
+        {7, 13, 14},
+        };
+
+    std::set<std::string> duplicates;
+    std::set<std::string> expectedDuplicates{
+        " freeze.",
+        " frog. Th",
+        ". That fr",
+        "This fr",
+        };
+    std::function<void(LcpInterval const&)> cb = [&]
         (LcpInterval const& interval) {
-            std::cout << "I HAS A INTERVAL: " << interval << "\n";
-            for (size_t i = interval.leftBound; i <= interval.rightBound; ++i) {
-                size_t start = this->sa[i];
-                std::cout << "\t";
-                helperBot(this->sidx.string(), start, interval.lcp);
-                std::cout << "\n";
-            }
-            std::cout << "\n";
+            intervals.push_back(interval);
+            size_t pos = this->sa[interval.leftBound];
+            duplicates.insert(this->text.substr(pos, interval.lcp));
         };
 
     typedef std::vector<TypeParam> SuffixArray;
-    MaximalIntervalFilter<SuffixArray> filter(5, this->sa, this->sidx.string(), callback);
+    MaximalIntervalFilter<SuffixArray> filter(5, this->sa, this->text, cb);
     visitLcpIntervals(this->lcp, filter);
+    EXPECT_EQ(expected, intervals);
+    EXPECT_EQ(expectedDuplicates, duplicates);
 }
