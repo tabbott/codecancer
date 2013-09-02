@@ -7,6 +7,7 @@ import pygments.lexers.agile
 import pygments.token
 import re
 import sys
+import uuid
 
 
 LEXER = pygments.lexers.agile.PerlLexer()
@@ -41,8 +42,22 @@ def parse_args():
 
 
 _DROP_WHITESPACE = re.compile(r'\s')
-def filter_text(raw_text):
+def _simple_filter_text(raw_text):
     return _DROP_WHITESPACE.sub('', raw_text)
+
+
+_MASKED_TOKEN_TYPES = {
+    pygments.token.Token.Name.Variable: lambda t: 'x',
+    pygments.token.Token.String: lambda t: hash(t)
+}
+
+def filter_text(token_type, raw_text):
+    whitespace_removed = _DROP_WHITESPACE.sub('', raw_text)
+    if whitespace_removed:
+        if token_type in _MASKED_TOKEN_TYPES:
+            return str(_MASKED_TOKEN_TYPES[token_type](whitespace_removed))
+
+    return whitespace_removed
 
 
 def process(raw):
@@ -52,7 +67,7 @@ def process(raw):
     string_components = []
 
     for file_position, token_type, text in LEXER.get_tokens_unprocessed(raw):
-        filtered_text = filter_text(text)
+        filtered_text = filter_text(token_type, text)
 
         token_line_count = text.count('\n')
         line_positions.extend(itertools.repeat(current_position,
@@ -70,6 +85,7 @@ def process(raw):
 def main():
     args = parse_args()
 
+    filenames = []
     file_start_positions = []
     line_start_positions = []
 
@@ -83,15 +99,24 @@ def main():
         with open(filename) as f:
             line_positions, string = process(f.read())
 
+        filenames.append(filename)
         file_start_positions.append(current_file_position)
-        current_file_position += len(string)
-
         line_start_positions.append(line_positions)
+
+        current_file_position += len(string)
         concat.write(string)
+
+        filenames.append(None)
+        file_start_positions.append(current_file_position)
+        line_start_positions.append(None)
+
+        filesep = uuid.uuid4().hex
+        current_file_position += len(filesep)
+        concat.write(filesep)
 
     with open(args.index_file, 'w') as index:
         json.dump({
-            'filenames': args.file,
+            'filenames': filenames,
             'file_start_positions': file_start_positions,
             'line_start_positions': line_start_positions,
         }, index)
