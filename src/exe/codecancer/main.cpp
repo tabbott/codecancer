@@ -20,11 +20,11 @@ struct Reporter {
     }
 
     void operator()(LcpInterval const& x) const {
-        _s << x.lcp << ": ";
+        _s << x.lcp << ":";
         for (size_t i = x.leftBound; i <= x.rightBound; ++i) {
             _s << _sa[i];
             if (i < x.rightBound) {
-                _s << ", ";
+                _s << ",";
             }
         }
         _s << "\n";
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
     size_t minRegion = atoi(argv[2]);
 
     SourceFileList files = SourceFileList::fromFile(argv[1]);
-    cout << "Found " << files.nonEmptyFiles().size() << " files, "
+    cerr << "Found " << files.nonEmptyFiles().size() << " files, "
         << files.totalSourceBytes() << " bytes.\n";
 
     SourceIndex sidx;
