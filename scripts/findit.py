@@ -26,30 +26,13 @@ class Index(object):
 
     def find(self, position):
         file_index = bisect.bisect(self.file_start_positions, position) - 1
-        line_number = 0
-
-        if file_index % 2 == 1:
-            if self.dist_prev_file(position, file_index) > self.dist_next_file(position, file_index):
-                file_index += 1
-            else:
-                file_index -= 1
-                line_number = -1
 
         filename = str(self.filenames[file_index])
         file_offset = position - self.file_start_positions[file_index]
 
-        line_number += bisect.bisect(self.line_start_positions[file_index],
+        line_number = bisect.bisect(self.line_start_positions[file_index],
                 file_offset)
         return (filename, line_number)
-
-    def dist_prev_file(self, position, file_index):
-        return position - self.file_start_positions[file_index]
-
-    def dist_next_file(self, position, file_index):
-        if file_index + 1 == len(self.file_start_positions):
-            return self.file_start_positions[-1]
-        else:
-            return self.file_start_positions[file_index + 1] - position
 
 
 def main():
