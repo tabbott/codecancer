@@ -26,9 +26,14 @@ namespace {
     }
 
     template<typename T>
-    std::vector<T> makeSuffixArray(std::string const& sequence) {
-        std::vector<T> sa(sequence.size());
-        divsufsort_wrapper(sequence, sa.data());
+    std::vector<T> makeSuffixArray(char const* data, size_t size) {
+        std::vector<T> sa(size);
+        divsufsort_wrapper(data, sa.data());
         return sa;
+    }
+
+    template<typename T>
+    std::vector<T> makeSuffixArray(std::string const& sequence) {
+        return makeSuffixArray<T>(sequence.data(), sequence.size());
     }
 }

@@ -2,6 +2,7 @@
 #include "index/LcpArray.hpp"
 #include "index/SuffixArray.hpp"
 #include "index/SourceIndex.hpp"
+#include "index/SourceIndexBuilder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -17,14 +18,16 @@ public:
     void SetUp() {
         text = "This frog. This freeze. That frog. That freeze.";
         std::stringstream ss(text);
-        sidx.addSource("x", ss);
-        sa = makeSuffixArray<T>(sidx.string());
-        makeLcpArray(sidx, sa, std::back_inserter(lcp));
+        SourceIndexBuilder builder;
+        builder.addSource("x", ss);
+        sidx = builder.build();
+        sa = makeSuffixArray<T>(sidx->data(), sidx->size());
+        makeLcpArray(*sidx, sa, std::back_inserter(lcp));
     }
 
 protected:
     std::string text;
-    SourceIndex sidx;
+    std::shared_ptr<SourceIndex> sidx;
     std::vector<T> sa;
     std::vector<T> lcp;
 };
@@ -57,7 +60,7 @@ TYPED_TEST(TestMaximalIntervalFilter, observe) {
         };
 
     typedef std::vector<TypeParam> SuffixArray;
-    MaximalIntervalFilter<SuffixArray> filter(5, this->sa, this->text, cb);
+    MaximalIntervalFilter<SuffixArray> filter(5, this->sa, this->text.data(), cb);
     visitLcpIntervals(this->lcp, filter);
     EXPECT_EQ(expectedIntervals, intervals);
     EXPECT_EQ(expectedDuplicates, duplicates);

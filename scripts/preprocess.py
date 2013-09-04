@@ -7,7 +7,6 @@ import pygments.lexers.agile
 import pygments.token
 import re
 import sys
-import uuid
 
 
 LEXER = pygments.lexers.agile.PerlLexer()
@@ -87,6 +86,7 @@ def main():
 
     filenames = []
     file_start_positions = []
+    file_sizes = []
     line_start_positions = []
 
     if args.concat_file:
@@ -102,21 +102,15 @@ def main():
         filenames.append(filename)
         file_start_positions.append(current_file_position)
         line_start_positions.append(line_positions)
+        file_sizes.append(len(string))
 
         current_file_position += len(string)
         concat.write(string)
 
-        filenames.append(None)
-        file_start_positions.append(current_file_position)
-        line_start_positions.append(None)
-
-        filesep = uuid.uuid4().hex
-        current_file_position += len(filesep)
-        concat.write(filesep)
-
     with open(args.index_file, 'w') as index:
         json.dump({
             'filenames': filenames,
+            'file_sizes': file_sizes,
             'file_start_positions': file_start_positions,
             'line_start_positions': line_start_positions,
         }, index)

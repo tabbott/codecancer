@@ -3,13 +3,15 @@ cmake_minimum_required(VERSION 2.8)
 project(index)
 
 set(SOURCES
-    MaximalIntervalFilter.hpp
     LcpArray.cpp
     LcpArray.hpp
-    prefix.hpp
-    SourceFileList.cpp
-    SourceFileList.hpp
+    MaximalIntervalFilter.hpp
+    SourceFile.cpp
+    SourceFile.hpp
+    SourceIndex.cpp
     SourceIndex.hpp
+    SourceIndexBuilder.cpp
+    SourceIndexBuilder.hpp
     SuffixArray.hpp
 )
 

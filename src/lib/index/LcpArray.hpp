@@ -3,6 +3,7 @@
 #include "SourceIndex.hpp"
 #include "SuffixArray.hpp"
 
+#include <cassert>
 #include <stack>
 #include <string>
 #include <vector>

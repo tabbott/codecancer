@@ -1,15 +1,18 @@
 #include "index/MaximalIntervalFilter.hpp"
 #include "index/LcpArray.hpp"
-#include "index/SourceFileList.hpp"
 #include "index/SourceIndex.hpp"
+
+#include <boost/iostreams/device/mapped_file.hpp>
 
 #include <cstdint>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
 
 using namespace std;
+namespace bio = boost::iostreams;
 
 template<typename T, typename SuffixArray>
 struct Reporter {
@@ -35,28 +38,25 @@ struct Reporter {
 };
 
 int main(int argc, char** argv) {
-    if (argc != 3) {
-        cerr << "Give source file list and min region size!\n";
+    if (argc != 4) {
+        cerr << "Give source file list, positions.json and min region size!\n";
         return 1;
     }
 
-    size_t minRegion = atoi(argv[2]);
+    ifstream json(argv[2]);
+    size_t minRegion = atoi(argv[3]);
 
-    SourceFileList files = SourceFileList::fromFile(argv[1]);
-    cerr << "Found " << files.nonEmptyFiles().size() << " files, "
-        << files.totalSourceBytes() << " bytes.\n";
+    ByteSource::ptr sourceBytes = ByteSource::create(new bio::mapped_file_source(argv[1]));
+    SourceIndex sidx(sourceBytes, json);
 
-    SourceIndex sidx;
-    sidx.addSources(files);
-
-    auto sa = makeSuffixArray<uint32_t>(sidx.string());
+    auto sa = makeSuffixArray<uint32_t>(sidx.data(), sidx.size());
     vector<uint32_t> lcp;
     lcp.reserve(sa.size());
     makeLcpArray(sidx, sa, back_inserter(lcp));
 
     Reporter<uint32_t, vector<uint32_t>> clark(cout, sa);
     std::function<void(LcpInterval const&)> cb(clark);
-    MaximalIntervalFilter<vector<uint32_t>> dude(minRegion, sa, sidx.string(), cb);
+    MaximalIntervalFilter<vector<uint32_t>> dude(minRegion, sa, sidx.data(), cb);
     visitLcpIntervals(lcp, dude);
 
     return 0;

@@ -2,6 +2,20 @@
 
 #include <cstddef>
 
+template<typename InputIterType, typename Output, typename PredType>
+void foreachIndexIf(
+    InputIterType begin,
+    InputIterType end,
+    Output out,
+    PredType pred)
+{
+    size_t idx(0);
+    for (; begin != end; ++begin, ++idx) {
+        if (pred(*begin))
+            out(idx);
+    }
+}
+
 template<typename IterTypeA, typename IterTypeB>
 static size_t commonPrefix(
     IterTypeA aBeg, IterTypeA aEnd,
@@ -12,3 +26,4 @@ static size_t commonPrefix(
         ++rv;
     return rv;
 }
+

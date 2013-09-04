@@ -1,5 +1,6 @@
 #include "index/LcpArray.hpp"
 #include "index/SourceIndex.hpp"
+#include "index/SourceIndexBuilder.hpp"
 #include "index/SuffixArray.hpp"
 
 #include <gtest/gtest.h>
@@ -28,13 +29,19 @@ class TestLcpArray : public ::testing::Test {
 public:
     void SetUp() {
         ss << "aaacatat";
-        sidx.addSource("x", ss);
-        sa = makeSuffixArray<T>(sidx.string());
+
+        SourceIndexBuilder builder;
+        builder.addSource("x", ss);
+
+        sidx = builder.build();
+
+        sa = makeSuffixArray<T>(sidx->data(), sidx->size());
+
         lcp.reserve(sa.size());
-        makeLcpArray(this->sidx, this->sa, std::back_inserter(lcp));
+        makeLcpArray(*sidx, sa, std::back_inserter(lcp));
     }
 
-    SourceIndex sidx;
+    std::shared_ptr<SourceIndex> sidx;
     stringstream ss;
     std::vector<T> sa;
     std::vector<T> lcp;

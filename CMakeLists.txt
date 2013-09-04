@@ -18,9 +18,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 #configure_file(version/version.h.in version/version.h @ONLY)
 #include_directories(${PROJECT_BINARY_DIR}/version)
 
-find_package(Boost 1.48 REQUIRED filesystem program_options serialization system chrono regex)
-link_libraries(rt)
+find_package(Boost 1.48 REQUIRED filesystem iostreams program_options serialization system chrono regex)
+link_libraries(rt jsoncpp)
+include_directories(/usr/include/jsoncpp)
 include_directories(${Boost_INCLUDE_DIRS})
+
+include_directories(vendor/rapidjson/include)
 
 
 set(CMAKE_C_FLAGS "-std=c99 -Wall -ansi -pedantic")
