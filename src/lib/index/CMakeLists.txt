@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 project(index)
 
 set(SOURCES
-    LcpArray.cpp
     LcpArray.hpp
+    LcpInterval.cpp
+    LcpInterval.hpp
     MaximalIntervalFilter.hpp
     SourceFile.cpp
     SourceFile.hpp
