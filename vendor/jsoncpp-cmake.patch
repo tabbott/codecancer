@@ -1,0 +1,33 @@
+diff -Nuar jsoncpp-src-0.6.0-rc2/CMakeLists.txt b/CMakeLists.txt
+--- jsoncpp-src-0.6.0-rc2/CMakeLists.txt	1969-12-31 18:00:00.000000000 -0600
++++ b/CMakeLists.txt	2013-09-05 12:10:24.193006156 -0500
+@@ -0,0 +1,9 @@
++cmake_minimum_required(VERSION 2.8)
++
++include_directories(include)
++add_subdirectory(src/lib_json)
++
++install(
++    DIRECTORY include
++    DESTINATION .
++    )
+diff -Nuar jsoncpp-src-0.6.0-rc2/src/lib_json/CMakeLists.txt b/src/lib_json/CMakeLists.txt
+--- jsoncpp-src-0.6.0-rc2/src/lib_json/CMakeLists.txt	1969-12-31 18:00:00.000000000 -0600
++++ b/src/lib_json/CMakeLists.txt	2013-09-05 12:08:04.097005976 -0500
+@@ -0,0 +1,16 @@
++cmake_minimum_required(VERSION 2.8)
++
++set(SOURCES
++    json_batchallocator.h
++    json_internalarray.inl
++    json_internalmap.inl
++    json_reader.cpp
++    json_tool.h
++    json_value.cpp
++    json_valueiterator.inl
++    json_writer.cpp
++)
++
++add_library(jsoncpp ${SOURCES})
++
++install(TARGETS jsoncpp DESTINATION lib)

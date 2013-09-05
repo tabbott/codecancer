@@ -1,4 +1,4 @@
-set(TEST_LIBS util)
+set(TEST_LIBS util jsoncpp)
 
 add_unit_tests(TestIoLib
     TestPodArray.cpp

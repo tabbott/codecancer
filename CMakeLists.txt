@@ -20,17 +20,15 @@ configure_file(.ycm_extra_conf.py.in ${CMAKE_SOURCE_DIR}/.ycm_extra_conf.py @ONL
 #include_directories(${PROJECT_BINARY_DIR}/version)
 
 find_package(Boost 1.48 REQUIRED filesystem iostreams program_options serialization system chrono regex)
-link_libraries(rt jsoncpp)
-include_directories(/usr/include/jsoncpp)
+link_libraries(rt)
 include_directories(${Boost_INCLUDE_DIRS})
-
-include_directories(vendor/rapidjson/include)
 
 
 set(CMAKE_C_FLAGS "-std=c99 -Wall -ansi -pedantic")
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -pedantic -Wno-long-long -Wno-variadic-macros")
 
 include(divsufsort)
+include(jsoncpp)
 
 # make sure to pick up headers from library dirs
 include_directories("src/lib")

@@ -5,5 +5,5 @@ set(SOURCES
 )
 
 add_executable(codecancer main.cpp)
-target_link_libraries(codecancer ui index reports metrics
+target_link_libraries(codecancer ui index reports metrics jsoncpp
     ${Boost_LIBRARIES} ${LIBDIVSUFSORT_LIBRARIES})

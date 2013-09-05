@@ -1,4 +1,4 @@
-set(TEST_LIBS index ${LIBDIVSUFSORT_LIBRARIES})
+set(TEST_LIBS index ${LIBDIVSUFSORT_LIBRARIES} jsoncpp)
 
 add_unit_tests(TestIndexLib
     TestLcpArray.cpp
