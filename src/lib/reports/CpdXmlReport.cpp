@@ -28,8 +28,8 @@ void CpdXmlReport::observe(LcpInterval const& interval) {
     size_t lines = std::numeric_limits<size_t>::max();
     size_t tokens = interval.lcp;
 
-    xml_node<>* node = _doc.allocate_node(node_element, "duplication");
-    _docRoot->append_node(node);
+    xml_node<>* dupNode = _doc.allocate_node(node_element, "duplication");
+    _docRoot->append_node(dupNode);
 
     for (size_t i = interval.leftBound; i <= interval.rightBound; ++i) {
         size_t globalOffset = sa[i];
@@ -45,11 +45,11 @@ void CpdXmlReport::observe(LcpInterval const& interval) {
         xml_node<>* fileNode = _doc.allocate_node(node_element, "file");
         add_attribute(fileNode, "path", file.name);
         add_attribute(fileNode, "line", startLine);
-        node->append_node(fileNode);
+        dupNode->append_node(fileNode);
     }
 
-    add_attribute(node, "lines", lines);
-    add_attribute(node, "tokens", tokens);
+    add_attribute(dupNode, "lines", lines);
+    add_attribute(dupNode, "tokens", tokens);
 }
 
 void CpdXmlReport::finalize() {
