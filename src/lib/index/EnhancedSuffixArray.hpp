@@ -17,7 +17,8 @@ namespace {
     const std::string DEFAULT_LCP_ARRAY_FILENAME("source.lcp");
 }
 
-struct EsaPaths {
+class EsaPaths {
+public:
     explicit EsaPaths(std::string const& dir)
         : _dir(dir)
     {
