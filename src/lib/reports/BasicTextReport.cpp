@@ -24,6 +24,7 @@ void BasicTextReport::reportInterval(LcpInterval const& interval) {
 
     for (size_t i = interval.leftBound; i <= interval.rightBound; ++i) {
         size_t offset = sa[i];
+        _dupCounter.addInterval(offset, offset + interval.lcp);
         SourceFile const& sourceFile = sidx.fileAtOffset(offset);
         _out << "\t" << sourceFile.name << ":"
             << sourceFile.globalToFileOffset(offset) << "\n";
@@ -39,5 +40,13 @@ void BasicTextReport::finalize() {
     using std::placeholders::_1;
     std::for_each(_intervals.begin(), _intervals.end(),
         std::bind(&BasicTextReport::reportInterval, this, _1));
-}
 
+    size_t dupBytes = _dupCounter.value();
+    size_t totalBytes = _esaView.sourceIndex().size();
+
+    _out << "Total duplicated bytes: " << dupBytes << "\n";
+    _out << "Effective source bytes: " << totalBytes << "\n";
+    _out << "Duplicated source percentage: "
+        << (100.0 * dupBytes) / totalBytes << "%\n";
+
+}
