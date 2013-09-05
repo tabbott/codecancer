@@ -30,3 +30,17 @@ TEST_F(TestSourceFile, fromJson) {
 
     EXPECT_EQ(expected, sources);
 }
+
+TEST_F(TestSourceFile, lineNumbers) {
+    auto const& file = sources[0];
+    EXPECT_EQ(0u, file.lineNumberOfIndex(0));
+    EXPECT_EQ(0u, file.lineNumberOfIndex(1));
+    EXPECT_EQ(0u, file.lineNumberOfIndex(2));
+    EXPECT_EQ(1u, file.lineNumberOfIndex(3));
+    EXPECT_EQ(1u, file.lineNumberOfIndex(4));
+    EXPECT_EQ(1u, file.lineNumberOfIndex(5));
+    EXPECT_EQ(1u, file.lineNumberOfIndex(6));
+    EXPECT_EQ(2u, file.lineNumberOfIndex(7));
+    EXPECT_EQ(2u, file.lineNumberOfIndex(8));
+    EXPECT_EQ(2u, file.lineNumberOfIndex(9));
+}

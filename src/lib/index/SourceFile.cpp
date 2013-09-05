@@ -5,6 +5,12 @@
 
 using boost::format;
 
+size_t SourceFile::lineNumberOfIndex(size_t index) const {
+    auto iter = std::upper_bound(lineStartPositions.begin(),
+            lineStartPositions.end(), index);
+    return iter - lineStartPositions.begin() - 1;
+}
+
 std::vector<SourceFile> SourceFile::fromJson(std::istream& in) {
     std::vector<SourceFile> rv;
 

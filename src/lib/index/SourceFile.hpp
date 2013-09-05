@@ -16,5 +16,7 @@ struct SourceFile {
 
     size_t size() const;
 
+    size_t lineNumberOfIndex(size_t index) const;
+
     static std::vector<SourceFile> fromJson(std::istream& in);
 };
