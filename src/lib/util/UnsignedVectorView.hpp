@@ -8,8 +8,8 @@ class UnsignedVectorView {
 private:
     struct Concept {
         virtual ~Concept() {}
-        virtual uint64_t operator[](uint64_t idx) const = 0;
-        virtual uint64_t size() const = 0;
+        virtual uint64_t operator[](size_t idx) const = 0;
+        virtual size_t size() const = 0;
     };
 
     template<typename T>
