@@ -17,7 +17,6 @@ void makeLcpArray(
         SuffixArray const& sa,
         OutputIterator out)
 {
-    typedef typename SuffixArray::value_type value_type;
     *out++ = 0;
 
     for (size_t idx = 1; idx < sa.size(); ++idx) {
