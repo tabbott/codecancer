@@ -40,7 +40,7 @@ flags = [
         '-Wno-variadic-macros',
         '-fexceptions',
         '-std=c++0x',
-        '-I', './src/lib'
+        '-I', '@CMAKE_SOURCE_DIR@/src/lib'
 ]
 
 
