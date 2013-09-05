@@ -10,6 +10,7 @@ set(RAPIDXML_ROOT ${CMAKE_BINARY_DIR}/vendor/rapidxml)
 ExternalProject_Add(
     rapidxml-1.13
     URL ${CMAKE_CURRENT_SOURCE_DIR}/vendor/rapidxml-1.13.tar.gz
+    PATCH_COMMAND patch -Np1 < ${CMAKE_CURRENT_SOURCE_DIR}/vendor/rapidxml-gcc.patch
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
