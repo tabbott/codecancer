@@ -11,7 +11,6 @@
 
 using rapidxml::node_element;
 using rapidxml::xml_node;
-using boost::lexical_cast;
 
 CpdXmlReport::CpdXmlReport(EsaView const& esaView, std::ostream& out)
     : _esaView(esaView)

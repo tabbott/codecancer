@@ -36,9 +36,10 @@ private:
     }
 
     template<typename Node, typename T>
-    void add_attribute(Node* node, char const* name, T const& value) {
-        std::string valueStr = boost::lexical_cast<std::string>(value);
-        auto attr = _doc.allocate_attribute(name, valueStr.data());
+    void add_attribute(Node* node, std::string const& name, T const& value) {
+        auto nameStr = xmlString(name);
+        auto valueStr = xmlString(value);
+        auto attr = _doc.allocate_attribute(nameStr, valueStr);
         node->append_attribute(attr);
     }
 };
