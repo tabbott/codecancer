@@ -4,9 +4,7 @@
 #include "index/EsaView.hpp"
 #include "index/LcpInterval.hpp"
 #include "reports/BasicTextReport.hpp"
-#include "util/Timer.hpp"
 
-#include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/program_options.hpp>
 
 #include <iostream>
