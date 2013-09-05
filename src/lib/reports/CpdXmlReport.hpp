@@ -30,7 +30,8 @@ private:
     }
 
     char* xmlString(std::string const& value) {
-        return _doc.allocate_string(value.data(), value.size());
+        // size() + 1 to count the null char
+        return _doc.allocate_string(value.data(), value.size() + 1);
     }
 
     template<typename T>
