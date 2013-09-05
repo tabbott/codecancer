@@ -20,7 +20,6 @@ configure_file(.ycm_extra_conf.py.in ${CMAKE_SOURCE_DIR}/.ycm_extra_conf.py @ONL
 #include_directories(${PROJECT_BINARY_DIR}/version)
 
 find_package(Boost 1.48 REQUIRED filesystem iostreams program_options serialization system chrono regex)
-link_libraries(rt)
 include_directories(${Boost_INCLUDE_DIRS})
 
 
