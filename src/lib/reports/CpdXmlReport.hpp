@@ -25,6 +25,16 @@ private:
     rapidxml::xml_node<>* _docRoot;
 
 private:
+    char* xmlString(std::string const& value) {
+        return _doc.allocate_string(value.data(), value.size());
+    }
+
+    template<typename T>
+    char* xmlString(T const& value) {
+        std::string valueStr = boost::lexical_cast<std::string>(value);
+        return xmlString(valueStr);
+    }
+
     template<typename Node, typename T>
     void add_attribute(Node* node, char const* name, T const& value) {
         std::string valueStr = boost::lexical_cast<std::string>(value);
