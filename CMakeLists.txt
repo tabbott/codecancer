@@ -28,6 +28,7 @@ set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -pedantic -Wno-long-long -Wno-variadic-mac
 
 include(divsufsort)
 include(jsoncpp)
+include(rapidxml)
 
 # make sure to pick up headers from library dirs
 include_directories("src/lib")
