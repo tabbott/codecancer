@@ -13,6 +13,8 @@ set(SOURCES
     IndexCommand.hpp
     ScanCommand.cpp
     ScanCommand.hpp
+    XmlReportCommand.cpp
+    XmlReportCommand.hpp
 )
 
 add_library(ui ${SOURCES} ${Boost_LIBRARIES})
