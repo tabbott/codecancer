@@ -9,14 +9,12 @@
 #include <limits> // numeric_limits
 #include <algorithm> // min
 
-using rapidxml::node_element;
-using rapidxml::xml_node;
-
 CpdXmlReport::CpdXmlReport(EsaView const& esaView, std::ostream& out)
     : _esaView(esaView)
     , _out(out)
-    , _docRoot(_doc.allocate_node(node_element, "pmd-cpd"))
+    , _docRoot(0)
 {
+    _docRoot = allocate_node("pmd-cpd");
     _doc.append_node(_docRoot);
 }
 
@@ -27,7 +25,7 @@ void CpdXmlReport::observe(LcpInterval const& interval) {
     size_t lines = std::numeric_limits<size_t>::max();
     size_t tokens = interval.lcp;
 
-    xml_node<>* dupNode = _doc.allocate_node(node_element, "duplication");
+    auto dupNode = allocate_node("duplication");
     _docRoot->append_node(dupNode);
 
     for (size_t i = interval.leftBound; i <= interval.rightBound; ++i) {
@@ -41,7 +39,7 @@ void CpdXmlReport::observe(LcpInterval const& interval) {
 
         lines = std::min(lineCount, lines);
 
-        xml_node<>* fileNode = _doc.allocate_node(node_element, "file");
+        auto fileNode = allocate_node("file");
         add_attribute(fileNode, "path", file.name);
         add_attribute(fileNode, "line", startLine);
         dupNode->append_node(fileNode);

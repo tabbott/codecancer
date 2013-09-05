@@ -25,6 +25,10 @@ private:
     rapidxml::xml_node<>* _docRoot;
 
 private:
+    rapidxml::xml_node<>* allocate_node(std::string const& name) {
+        return _doc.allocate_node(rapidxml::node_element, xmlString(name));
+    }
+
     char* xmlString(std::string const& value) {
         return _doc.allocate_string(value.data(), value.size());
     }
