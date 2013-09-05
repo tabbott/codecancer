@@ -2,6 +2,7 @@
 
 #include "IndexCommand.hpp"
 #include "ScanCommand.hpp"
+#include "BasicReportCommand.hpp"
 
 #include <boost/format.hpp>
 
@@ -13,7 +14,8 @@ using boost::format;
 namespace {
     const std::map<std::string, CommandBase::ptr> COMMANDS{
         {"index", CommandBase::ptr(new IndexCommand)},
-        {"scan", CommandBase::ptr(new ScanCommand)}
+        {"scan", CommandBase::ptr(new ScanCommand)},
+        {"basic-report", CommandBase::ptr(new BasicReportCommand)}
         };
 }
 

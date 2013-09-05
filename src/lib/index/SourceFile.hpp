@@ -11,7 +11,7 @@ struct SourceFile {
     size_t lastByte;
     std::vector<size_t> lineStartPositions;
 
-    size_t globalToFileOffset(size_t offset);
+    size_t globalToFileOffset(size_t offset) const;
     bool operator==(SourceFile const& rhs) const;
 
     size_t size() const;

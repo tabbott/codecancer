@@ -44,7 +44,7 @@ std::vector<SourceFile> SourceFile::fromJson(std::istream& in) {
     return rv;
 }
 
-size_t SourceFile::globalToFileOffset(size_t offset) {
+size_t SourceFile::globalToFileOffset(size_t offset) const {
     return offset - firstByte;
 }
 

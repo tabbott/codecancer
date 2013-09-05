@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 project(ui)
 
 set(SOURCES
+    BasicReportCommand.cpp
+    BasicReportCommand.hpp
     CodeCancer.cpp
     CodeCancer.hpp
     CommandBase.cpp
