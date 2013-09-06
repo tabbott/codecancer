@@ -117,6 +117,35 @@ public:
         return *_sourceIndex;
     }
 
+    // This is mainly for use in test cases/debugging. If you try to print a
+    // large suffix array, then your terminal is probably going to catch on
+    // fire.
+    friend std::ostream& operator<<(std::ostream& s, EnhancedSuffixArray const& esa) {
+        auto const& sa = esa.suffixArray();
+        auto const& lcp = esa.lcpArray();
+        auto const& sidx = esa.sourceIndex();
+
+        s << "#Idx\tSA\tLCP\tBWT\tSuffix\n";
+        for (size_t i = 0; i < sa.size(); ++i) {
+            s << i << "\t" << sa[i] << "\t" << lcp[i] << "\t";
+            if (sa[i] != 0) {
+                char c = sidx.data()[sa[i] - 1];
+                if (c == '\n')
+                    c = '+';
+                s << c;
+            }
+            s << "\t[";
+            for (size_t j = sa[i]; j < sa.size(); ++j) {
+                char c = sidx.data()[j];
+                if (c == '\n')
+                    c = '+';
+                s << c;
+            }
+            s << "]\n";
+        }
+        return s;
+    }
+
 private:
     EsaPaths _paths;
     ByteSource::ptr _sourceBytes;
