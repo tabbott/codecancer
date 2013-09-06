@@ -1,7 +1,9 @@
 #include "ReportBase.hpp"
 
-#include <sstream>
 #include <boost/format.hpp>
+
+#include <sstream>
+#include <stdexcept>
 
 using boost::format;
 
