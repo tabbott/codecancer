@@ -1,11 +1,25 @@
 #include "SourceIndex.hpp"
+#include "util/StreamHandler.hpp"
 
 #include <boost/format.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
 
+#include <fstream>
 #include <stdexcept>
 #include <utility>
 
 using boost::format;
+namespace bio = boost::iostreams;
+
+SourceIndex::SourceIndex(Path const& source, Path const& positions)
+    : _sourceText(ByteSource::create(new bio::mapped_file_source(source)))
+    , _rawSource(_sourceText->data())
+    , _rawSourceSize(_sourceText->size())
+{
+    StreamHandler streams;
+    _sourceFiles = SourceFile::fromJson(
+        *streams.open<std::istream>(positions.string()));
+}
 
 SourceIndex::SourceIndex(ByteSource::ptr const& sourceText, std::vector<SourceFile> files)
     : _sourceText(sourceText)
@@ -67,4 +81,12 @@ char const* SourceIndex::data() const {
 
 std::vector<SourceFile> const& SourceIndex::sourceFiles() const {
     return _sourceFiles;
+}
+
+void SourceIndex::write(std::ostream& srcStream, std::ostream& posStream) const {
+    if (!srcStream.write(data(), size())
+        || !(posStream << SourceFile::toJson(sourceFiles())))
+    {
+        throw std::runtime_error("Failed to write source index!");
+    }
 }

@@ -3,6 +3,7 @@
 #include "SourceFile.hpp"
 #include "io/ByteSource.hpp"
 #include "util/Sequence.hpp"
+#include "boost/filesystem/path.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -17,6 +18,9 @@
 
 class SourceIndex {
 public:
+    typedef boost::filesystem::path Path;
+
+    SourceIndex(Path const& source, Path const& positions);
     SourceIndex(ByteSource::ptr const& sourceText, std::vector<SourceFile> files);
     SourceIndex(ByteSource::ptr const& sourceText, std::istream& json);
 
@@ -28,6 +32,8 @@ public:
     char const* data() const;
 
     std::vector<SourceFile> const& sourceFiles() const;
+
+    void write(std::ostream& srcStream, std::ostream& posStream) const;
 
 private:
     ByteSource::ptr _sourceText;
