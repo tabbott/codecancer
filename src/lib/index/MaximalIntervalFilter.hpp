@@ -46,6 +46,14 @@ struct MaximalIntervalFilter {
     bool bwtEqual(size_t x, size_t y) const {
         size_t saX = _sa[x];
         size_t saY = _sa[y];
+
+        auto const& sourceFileX = _sidx.fileAtOffset(saX);
+        auto const& sourceFileY = _sidx.fileAtOffset(saY);
+
+        if (sourceFileX.globalToFileOffset(saX) == 0
+            || sourceFileY.globalToFileOffset(saY) == 0)
+            return false;
+
         if (saX == 0 || saY == 0)
             return false;
         return _text[saX - 1] == _text[saY - 1];
