@@ -1,5 +1,8 @@
 #include "index/SourceIndex.hpp"
 
+#include "util/TempFile.hpp"
+
+#include <boost/filesystem/path.hpp>
 #include <gtest/gtest.h>
 
 #include <cstdint>
@@ -8,6 +11,7 @@
 #include <vector>
 
 using namespace std;
+namespace bfs = boost::filesystem;
 
 class TestSourceIndex : public ::testing::Test{
 public:
@@ -124,4 +128,24 @@ TEST_F(TestSourceIndex, lcp) {
     EXPECT_EQ("5\n670", data.substr(17, 5));
     // 5\n should match, and then we stop
     EXPECT_EQ(2u, sidx->longestCommonPrefix(7, 17));
+}
+
+TEST_F(TestSourceIndex, jsonIo) {
+    auto tempDir = TempDir::create(TempDir::CLEANUP);
+    auto sourceFile = tempDir->tempFile(TempFile::LEAVE);
+    auto posFile = tempDir->tempFile(TempFile::LEAVE);
+
+    sidx->write(sourceFile->stream(), posFile->stream());
+
+    // make sure files are flushed to disk
+    sourceFile->stream().close();
+    posFile->stream().close();
+
+    SourceIndex newSidx(sourceFile->path(), posFile->path());
+    EXPECT_FALSE(newSidx.empty());
+    ASSERT_EQ(sidx->size(), newSidx.size());
+    EXPECT_TRUE(std::equal(sidx->data(), sidx->data() + sidx->size(),
+        newSidx.data()));
+
+    EXPECT_EQ(sidx->sourceFiles(), newSidx.sourceFiles());
 }
