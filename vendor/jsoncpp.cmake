@@ -8,7 +8,7 @@ set_directory_properties(PROPERTIES
 
 set(JSONCPP_ROOT ${CMAKE_BINARY_DIR}/vendor/jsoncpp)
 ExternalProject_Add(
-    jsoncppufsort-0.6.0
+    jsoncpp-0.6.0
     URL ${CMAKE_CURRENT_SOURCE_DIR}/vendor/jsoncpp-src-0.6.0-rc2.tar.gz
     PATCH_COMMAND patch -Np1 < ${CMAKE_CURRENT_SOURCE_DIR}/vendor/jsoncpp-cmake.patch
     CMAKE_ARGS
