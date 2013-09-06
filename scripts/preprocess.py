@@ -10,6 +10,8 @@ import sys
 
 
 LEXER = pygments.lexers.agile.PerlLexer()
+PLUGIN_NAME = "lex-perl"
+PLUGIN_DESCRIPTION = "Lex perl source files with the pygments library"
 
 
 def _process_tokens(raw_tokens):
@@ -26,6 +28,11 @@ def _process_tokens(raw_tokens):
 def parse_args():
     parser = argparse.ArgumentParser()
 
+    # codecancer plugin specific args
+    parser.add_argument('--plugin-name', action='store_true')
+    parser.add_argument('--plugin-description', action='store_true')
+
+    # general args
     parser.add_argument('--concat-file',
             help='where to output normalized representation')
     parser.add_argument('--index-file', default='positions.json',
@@ -83,6 +90,13 @@ def process(raw):
 
 def main():
     args = parse_args()
+    if args.plugin_name:
+        print PLUGIN_NAME
+        return
+
+    if args.plugin_description:
+        print PLUGIN_DESCRIPTION
+        return
 
     filenames = []
     file_start_positions = []
