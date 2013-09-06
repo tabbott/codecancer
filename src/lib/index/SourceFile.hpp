@@ -1,5 +1,8 @@
 #pragma once
 
+#include <json/value.h>
+#include <json/writer.h> // operator<<(ostream&, Json::Value)
+
 #include <cstddef>
 #include <istream>
 #include <string>
@@ -18,5 +21,6 @@ struct SourceFile {
 
     size_t lineNumberOfIndex(size_t index) const;
 
+    static Json::Value toJson(std::vector<SourceFile> const& files);
     static std::vector<SourceFile> fromJson(std::istream& in);
 };

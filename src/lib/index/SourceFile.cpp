@@ -11,6 +11,22 @@ size_t SourceFile::lineNumberOfIndex(size_t index) const {
     return iter - lineStartPositions.begin() - 1;
 }
 
+
+Json::Value SourceFile::toJson(std::vector<SourceFile> const& files) {
+    Json::Value obj;
+    for (auto const& f : files) {
+        obj["filenames"].append(f.name);
+        obj["file_start_positions"].append(Json::Value::UInt64(f.firstByte));
+        obj["file_sizes"].append(Json::Value::UInt64(f.lastByte - f.firstByte + 1));
+        Json::Value lineStarts;
+        for (auto const& pos : f.lineStartPositions) {
+            lineStarts.append(Json::Value::UInt64(pos));
+        }
+        obj["line_start_positions"].append(lineStarts);
+    }
+    return obj;
+}
+
 std::vector<SourceFile> SourceFile::fromJson(std::istream& in) {
     std::vector<SourceFile> rv;
 
