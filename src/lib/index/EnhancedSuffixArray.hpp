@@ -1,11 +1,15 @@
 #pragma once
 
-#include "io/PodArray.hpp"
+#include "LcpArray.hpp"
 #include "SourceIndex.hpp"
+#include "SuffixArray.hpp"
+#include "io/PodArray.hpp"
+#include "io/StreamHandler.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 
+#include <iterator>
 #include <cassert>
 #include <memory>
 #include <string>
@@ -53,6 +57,31 @@ class EnhancedSuffixArray {
 public:
     typedef T int_type;
     typedef MappedPodArray<int_type> ArrayType;
+
+    static std::shared_ptr<EnhancedSuffixArray> build(
+        SourceIndex const& sidx, std::string const& dir
+        )
+    {
+        { // This block makes sure streams is out of scope before return
+            StreamHandler streams;
+            EsaPaths paths(dir);
+            auto srcStream = streams.open<std::ostream>(paths.sourcePath());
+            auto posStream = streams.open<std::ostream>(paths.positionsPath());
+            auto saStream = streams.open<std::ostream>(paths.saPath());
+            auto lcpStream = streams.open<std::ostream>(paths.lcpPath());
+            sidx.write(*srcStream, *posStream);
+
+            auto suffixArray = makeSuffixArray<T>(sidx.data(), sidx.size());
+            std::vector<T> lcpArray;
+            lcpArray.reserve(suffixArray.size());
+            makeLcpArray(sidx, suffixArray, std::back_inserter(lcpArray));
+            writePodArray(*saStream, suffixArray.begin(), suffixArray.end());
+            writePodArray(*lcpStream, lcpArray.begin(), lcpArray.end());
+        }
+
+        return std::shared_ptr<EnhancedSuffixArray>(new EnhancedSuffixArray(dir));
+    }
+
 
     explicit EnhancedSuffixArray(std::string const& dir)
         : _paths(dir)

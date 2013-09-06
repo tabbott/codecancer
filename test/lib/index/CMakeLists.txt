@@ -1,6 +1,7 @@
 set(TEST_LIBS index util ${LIBDIVSUFSORT_LIBRARIES} ${Boost_LIBRARIES} jsoncpp)
 
 add_unit_tests(TestIndexLib
+    TestEnhancedSuffixArray.cpp
     TestLcpArray.cpp
     TestSourceIndexBuilder.cpp
     TestSourceIndex.cpp
