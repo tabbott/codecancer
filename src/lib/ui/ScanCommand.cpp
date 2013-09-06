@@ -44,7 +44,7 @@ void ScanCommand::exec() {
 
     std::function<void(LcpInterval const&)> filter(
         MaximalIntervalFilter<EnhancedSuffixArray<uint32_t>::ArrayType>(
-            _minRegion, esa.suffixArray(), esa.sourceIndex().data(), cb)
+            _minRegion, esa.suffixArray(), esa.sourceIndex(), cb)
         );
 
     Timer<> timer;

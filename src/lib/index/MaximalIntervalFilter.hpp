@@ -2,6 +2,7 @@
 
 #include "LcpArray.hpp"
 #include "SuffixArray.hpp"
+#include "SourceIndex.hpp"
 
 #include <cstddef> // size_t
 #include <string>
@@ -11,10 +12,15 @@ template<typename SuffixArray>
 struct MaximalIntervalFilter {
     typedef std::function<void(LcpInterval const&)> Reporter;
 
-    MaximalIntervalFilter(size_t minLcp, SuffixArray const& sa, char const* text, Reporter& r)
+    MaximalIntervalFilter(
+            size_t minLcp,
+            SuffixArray const& sa,
+            SourceIndex const& sourceIndex,
+            Reporter& r)
         : _minLcp(minLcp)
         , _sa(sa)
-        , _text(text)
+        , _sidx(sourceIndex)
+        , _text(sourceIndex.data())
         , _report(r)
     {
     }
@@ -48,6 +54,7 @@ struct MaximalIntervalFilter {
 private:
     size_t _minLcp;
     SuffixArray const& _sa;
+    SourceIndex const& _sidx;
     char const* _text;
     Reporter& _report;
 };

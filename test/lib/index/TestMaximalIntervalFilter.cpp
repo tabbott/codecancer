@@ -1,8 +1,10 @@
 #include "index/MaximalIntervalFilter.hpp"
+#include "index/EnhancedSuffixArray.hpp"
 #include "index/LcpArray.hpp"
 #include "index/SuffixArray.hpp"
 #include "index/SourceIndex.hpp"
 #include "index/SourceIndexBuilder.hpp"
+#include "util/TempFile.hpp"
 
 #include <gtest/gtest.h>
 
@@ -60,7 +62,7 @@ TYPED_TEST(TestMaximalIntervalFilter, observe) {
         };
 
     typedef std::vector<TypeParam> SuffixArray;
-    MaximalIntervalFilter<SuffixArray> filter(5, this->sa, this->text.data(), cb);
+    MaximalIntervalFilter<SuffixArray> filter(5, this->sa, *this->sidx, cb);
     visitLcpIntervals(this->lcp, filter);
     EXPECT_EQ(expectedIntervals, intervals);
     EXPECT_EQ(expectedDuplicates, duplicates);
