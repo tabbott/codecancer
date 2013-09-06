@@ -49,7 +49,7 @@ public:
     virtual ~TempDir();
 
     const std::string& path() const;
-    TempFile::ptr tempFile(TempFile::Mode mode) const;
+    TempFile::ptr tempFile(TempFile::Mode mode = TempFile::LEAVE) const;
 
 protected:
     explicit TempDir(Mode mode);
