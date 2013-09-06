@@ -1,5 +1,7 @@
 #include "index/SourceFile.hpp"
 
+#include <json/writer.h>
+
 #include <gtest/gtest.h>
 
 #include <sstream>
@@ -43,4 +45,12 @@ TEST_F(TestSourceFile, lineNumbers) {
     EXPECT_EQ(2u, file.lineNumberOfIndex(7));
     EXPECT_EQ(2u, file.lineNumberOfIndex(8));
     EXPECT_EQ(2u, file.lineNumberOfIndex(9));
+}
+
+TEST_F(TestSourceFile, toJson) {
+    std::stringstream ss;
+    Json::Value json(SourceFile::toJson(sources));
+    ss << json;
+    std::vector<SourceFile> newSources = SourceFile::fromJson(ss);
+    EXPECT_EQ(sources, newSources);
 }
