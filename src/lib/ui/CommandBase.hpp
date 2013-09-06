@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util/StreamHandler.hpp"
+#include "io/StreamHandler.hpp"
 
 #include <boost/program_options.hpp>
 

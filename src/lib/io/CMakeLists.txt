@@ -5,4 +5,5 @@ project(io)
 set(SOURCES
     ByteSource.hpp
     PodArray.hpp
+    StreamHandler.hpp
 )

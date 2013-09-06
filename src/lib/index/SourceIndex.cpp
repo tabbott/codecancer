@@ -1,5 +1,5 @@
 #include "SourceIndex.hpp"
-#include "util/StreamHandler.hpp"
+#include "io/StreamHandler.hpp"
 
 #include <boost/format.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>

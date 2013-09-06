@@ -4,7 +4,6 @@ project(util)
 
 set(SOURCES
     Sequence.hpp
-    StreamHandler.hpp
     TempFile.cpp
     TempFile.hpp
     Timer.hpp
