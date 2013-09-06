@@ -7,6 +7,7 @@ set(SOURCES
     CpdXmlReport.hpp
     BasicTextReport.cpp
     BasicTextReport.hpp
+    ReportBase.cpp
     ReportBase.hpp
 )
 
