@@ -23,7 +23,7 @@ find_package(Boost 1.48 REQUIRED filesystem iostreams program_options serializat
 include_directories(${Boost_INCLUDE_DIRS})
 
 
-set(CMAKE_C_FLAGS "-std=c99 -Wall -ansi -pedantic")
+set(CMAKE_C_FLAGS "-Wall -ansi -pedantic")
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -pedantic -Wno-long-long -Wno-variadic-macros")
 
 include(divsufsort)
